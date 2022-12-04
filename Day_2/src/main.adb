@@ -158,12 +158,12 @@ begin
 
    end loop;
 
-   Put_Line ((if Error then
-                "There was an error."
-             else
-                "There were no errors."));
-   Put_Line ("Total score for part one: " & Total_Score1'Image);
-   Put_Line ("Total score for part two: " & Total_Score2'Image);
+   if Error then
+      Put_Line ("There was an error.");
+   else
+      Put_Line ("Total score for part one: " & Total_Score1'Image);
+      Put_Line ("Total score for part two: " & Total_Score2'Image);
+   end if;
 
    Close (File);
 end;

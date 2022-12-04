@@ -54,14 +54,12 @@ begin
       Error := True;
    end if;
 
-   Put_Line ((if Error then
-                "There was an error."
-             else
-                "There were no errors."));
-
-   Put_Line ("Part 1, Maximum calories: " & Maximum'Image);
-
-   Put_Line ("Part 2, Sum of top three calories: " & Sum'Image);
+   if Error then
+      Put_Line ("There was an error.");
+   else
+      Put_Line ("Part 1, Maximum calories: " & Maximum'Image);
+      Put_Line ("Part 2, Sum of top three calories: " & Sum'Image);
+   end if;
 
    Close (File);
 end;
