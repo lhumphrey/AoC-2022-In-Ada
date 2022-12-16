@@ -2,6 +2,9 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 procedure Main with SPARK_Mode is
 
+   pragma Warnings (Off, """*"" is set by ""*"" but not used after the call",
+                    Reason => "Unused parameter is mandated by the API");
+
    Filename : String := "input.txt";
    File : File_Type;
    Error : Boolean := False;
@@ -18,7 +21,6 @@ begin
    else
       Error := True;
    end if;
-
 
    for I in S'First .. Last - 3 loop
       if (for all J in I .. I + 2 =>
@@ -37,9 +39,6 @@ begin
          exit;
       end if;
    end loop;
-
-
-   Put_Line ("String size is : " & Last'Image);
 
    if Error then
       Put_Line ("There was an error.");
