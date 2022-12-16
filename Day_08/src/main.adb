@@ -1,8 +1,11 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO;
-with Ada.Numerics.Big_Numbers.Big_Integers; use Ada.Numerics.Big_Numbers.Big_Integers;
+-- with Ada.Numerics.Big_Numbers.Big_Integers; use Ada.Numerics.Big_Numbers.Big_Integers;
 
 procedure Main with SPARK_Mode is
+
+   pragma Warnings (Off, """*"" is set by ""*"" but not used after the call",
+                    Reason => "Unused parameter is mandated by the API");
 
    Max : constant Positive := 150;
 
@@ -178,8 +181,7 @@ begin
                pragma Loop_Invariant (Count = JJ - J);
             end loop;
 
-            if (To_Big_Integer (Score) * To_Big_Integer (Count) <
-                  To_Big_Integer (Integer'Last))
+            if (Count = 0 or else Score < Integer'Last / Count)
             then
                Score := Score * Count;
             else
@@ -195,8 +197,7 @@ begin
                pragma Loop_Invariant (Count = J - JJ);
             end loop;
 
-            if (To_Big_Integer (Score) * To_Big_Integer (Count) <
-                  To_Big_Integer (Integer'Last))
+            if (Count = 0 or else Score < Integer'Last / Count)
             then
                Score := Score * Count;
             else
