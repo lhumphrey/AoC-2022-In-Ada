@@ -2,6 +2,9 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 procedure Main with SPARK_Mode is
 
+   pragma Warnings (Off, """*"" is set by ""*"" but not used after the call",
+                    Reason => "Unused parameter is mandated by the API");
+
    subtype Item is Character range 'A' .. 'z';
 
    type Priority is array (Item) of Positive;
@@ -121,8 +124,8 @@ begin
    if Error then
       Put_Line ("There was an error.");
    else
-      Put_Line ("Priority sum for part one: " & Sack_Sum'Image);
-      Put_Line ("Priority sum for part two: " & Badge_Sum'Image);
+      Put_Line ("Priority sum for Part 1: " & Sack_Sum'Image);
+      Put_Line ("Priority sum for Part 2: " & Badge_Sum'Image);
    end if;
 
    Close (File);
