@@ -2,6 +2,9 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 procedure Main with SPARK_Mode is
 
+   pragma Warnings (Off, """*"" is set by ""*"" but not used after the call",
+                    Reason => "Unused parameter is mandated by the API");
+
    type Input1 is (A, B, C);
    type Input2 is (X, Y, Z);
    type Play is (Rock, Paper, Scissors);
@@ -26,11 +29,16 @@ procedure Main with SPARK_Mode is
    -- Process_Input --
    -------------------
 
-   procedure Process_Input (File : in File_Type;
-                            I1 : out Input1;
-                            I2 : out Input2;
-                            Error : out Boolean)
-     with Pre => Is_Open (File) and then Mode (File) = In_File and then not End_Of_File (File)
+   procedure Process_Input
+     (File : in File_Type;
+      I1 : out Input1;
+      I2 : out Input2;
+      Error : out Boolean)
+     with
+       Pre =>
+         Is_Open (File) and then
+         Mode (File) = In_File and then
+         not End_Of_File (File)
    is
       S : String (1 .. 256);
       Last : Natural;
@@ -100,8 +108,9 @@ procedure Main with SPARK_Mode is
    -- Score_Two --
    ---------------
 
-   function Score_Two (Opponent_Choice : Play; Desired_Outcome : Outcome)
-                       return Natural
+   function Score_Two
+     (Opponent_Choice : Play;
+      Desired_Outcome : Outcome) return Natural
      with Post => Score_Two'Result <= 9
    is
       Player_Choice : Play;
@@ -130,11 +139,9 @@ procedure Main with SPARK_Mode is
    Filename : String := "input.txt";
    File : File_Type;
    Error : Boolean := False;
-
    I1 : Input1;
    I2 : Input2;
-   Total_Score1 : Natural := 0;
-   Total_Score2 : Natural := 0;
+   Total_Score1, Total_Score2 : Natural := 0;
 
 begin
 
@@ -161,8 +168,8 @@ begin
    if Error then
       Put_Line ("There was an error.");
    else
-      Put_Line ("Total score for part one: " & Total_Score1'Image);
-      Put_Line ("Total score for part two: " & Total_Score2'Image);
+      Put_Line ("Total score for Part 1: " & Total_Score1'Image);
+      Put_Line ("Total score for Part 2: " & Total_Score2'Image);
    end if;
 
    Close (File);
