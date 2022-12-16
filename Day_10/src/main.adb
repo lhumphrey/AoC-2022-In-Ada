@@ -1,9 +1,10 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO;
-with Ada.Numerics.Big_Numbers.Big_Integers;
-use Ada.Numerics.Big_Numbers.Big_Integers;
 
 procedure Main with SPARK_Mode is
+
+   pragma Warnings (Off, """*"" is set by ""*"" but not used after the call",
+                    Reason => "Unused parameter is mandated by the API");
 
    Filename : String := "input.txt";
    File : File_Type;
@@ -91,6 +92,8 @@ begin
          New_Line;
       end loop;
    end if;
+
+   New_Line;
 
    Close (File);
 
