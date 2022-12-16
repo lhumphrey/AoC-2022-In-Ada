@@ -5,12 +5,20 @@ with Ada.Strings.Fixed;
 
 procedure Main with SPARK_Mode is
 
+   pragma Warnings (Off, """*"" is set by ""*"" but not used after the call",
+                    Reason => "Unused parameter is mandated by the API");
+
+   pragma Warnings (Off, "analyzing unreferenced function ""*""",
+                    Reason => "Extra functions for debugging only");
+
+   pragma Warnings (Off, "analyzing unreferenced procedure ""*""",
+                    Reason => "Extra functions for debugging only");
+
    Max_Stacks : constant Positive := 9;
    Max_Crates : constant Positive := 256;
 
    subtype Crate_Index is Integer range 1 .. Max_Crates;
    subtype Extended_Crate_Index is Integer range 0 .. Max_Crates;
-
    subtype Crate_Arr is String (Crate_Index);
 
    type Crate_Stack is record
@@ -20,49 +28,49 @@ procedure Main with SPARK_Mode is
 
    subtype Stack_Index is Integer range 1 .. Max_Stacks;
    subtype Extended_Stack_Index is Integer range 1 .. Max_Stacks;
-
    type Dock is array (Stack_Index) of Crate_Stack;
 
-   -- Dock : Crate_Stack_Arr;
-
-   procedure Add_Crate (Stack : in out Crate_Stack;
-                        Crate_Label : in Character)
+   procedure Add_Crate
+     (Stack : in out Crate_Stack;
+      Crate_Label : in Character)
      with
        Pre => Stack.Size < Max_Crates,
        Post => Stack.Size = Stack.Size'Old + 1;
 
-   procedure Add_Crate (Stack : in out Crate_Stack;
-                        Crate_Label : in Character)
-   is
+   procedure Add_Crate
+     (Stack : in out Crate_Stack;
+      Crate_Label : in Character) is
    begin
       Stack.Size := Stack.Size + 1;
       Stack.Crates (Stack.Size) := Crate_Label;
    end Add_Crate;
 
-   procedure Insert_Crate_On_Bottom (Stack : in out Crate_Stack;
-                                     Crate_Label : in Character)
+   procedure Insert_Crate_On_Bottom
+     (Stack : in out Crate_Stack;
+      Crate_Label : in Character)
      with
        Pre => Stack.Size < Max_Crates,
        Post => Stack.Size = Stack.Size'Old + 1;
 
-   procedure Insert_Crate_On_Bottom (Stack : in out Crate_Stack;
-                                     Crate_Label : in Character)
-   is
+   procedure Insert_Crate_On_Bottom
+     (Stack : in out Crate_Stack;
+      Crate_Label : in Character) is
    begin
       Stack.Crates (2 .. Stack.Size + 1) := Stack.Crates (1 .. Stack.Size);
       Stack.Crates (1) := Crate_Label;
       Stack.Size := Stack.Size + 1;
    end Insert_Crate_On_Bottom;
 
-   procedure Remove_Crate (Stack : in out Crate_Stack;
-                           Crate_Label : out Character)
+   procedure Remove_Crate
+     (Stack : in out Crate_Stack;
+      Crate_Label : out Character)
      with
        Pre => Stack.Size > 0,
        Post => Stack.Size = Stack.Size'Old - 1;
 
-   procedure Remove_Crate (Stack : in out Crate_Stack;
-                           Crate_Label : out Character)
-   is
+   procedure Remove_Crate
+     (Stack : in out Crate_Stack;
+      Crate_Label : out Character) is
    begin
       Crate_Label := Stack.Crates (Stack.Size);
       Stack.Size := Stack.Size - 1;
@@ -84,13 +92,13 @@ procedure Main with SPARK_Mode is
    -- Build_Crate_Stacks --
    ------------------------
 
-   procedure Build_Crate_Stacks (S : in String;
-                                 D : in out Dock;
-                                 Error : in out Boolean)
+   procedure Build_Crate_Stacks
+     (S : in String;
+      D : in out Dock;
+      Error : in out Boolean)
    is
       Idx : Positive;
    begin
-
       for I in 1 .. Max_Stacks loop
          Idx := (I - 1) * 4 + 2;
          if Idx <= S'Last and then D (I).Size < Max_Crates then
@@ -108,9 +116,10 @@ procedure Main with SPARK_Mode is
    -- Get_Move_Instruction --
    --------------------------
 
-   procedure Get_Move_Instruction (S : in String;
-                                   Amount, From, To : out Positive;
-                                   Error : in out Boolean)
+   procedure Get_Move_Instruction
+     (S : in String;
+      Amount, From, To : out Positive;
+      Error : in out Boolean)
    is
       Num : Integer;
       IdxMove, IdxFrom, IdxTo, Last : Natural;
@@ -219,9 +228,10 @@ procedure Main with SPARK_Mode is
        This_Dock (To).Size + Amount <= Max_Crates;
 
 
-   procedure Crate_Mover_9001 (This_Dock : in out Dock;
-                               Amount : in Positive;
-                               From, To : in Stack_Index)
+   procedure Crate_Mover_9001
+     (This_Dock : in out Dock;
+      Amount : in Positive;
+      From, To : in Stack_Index)
    is
       Temp_Stack : Crate_Stack;
       C : Character;
@@ -288,7 +298,7 @@ begin
 
    Open (File, In_File, Filename);
 
-   -- Initialize Crate_Stacks
+   -- Initialize Crate_Stacks for Part 1 and copy for Part 2
    while not End_Of_File (File) and not Error loop
       Get_Line (File, S, Last);
       if Ada.Strings.Fixed.Index (S, "1", S'First) > 0 then
@@ -329,6 +339,7 @@ begin
       end if;
    end loop;
 
+   -- Print results
    if Error then
       Put_Line ("There was an error.");
    else
